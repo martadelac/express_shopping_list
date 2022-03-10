@@ -37,13 +37,15 @@ router.get("/:name", function (req, res) {
 
 //EDITING ONE ITEM
 
-router.patch("/:name", (req, res, next) => {
-  try {
-    let foundItem = items.update(req.params.name, req.body);
-    res.json({ item: foundItem });
-  } catch (err) {
-    return next(err);
+router.patch("/:name", function (req, res) {
+  const foundItem = items.find((item) => item.name === req.params.name);
+  if (foundItem === undefined) {
+    throw new ExpressError("Item not found", 404);
   }
+  foundItem.name = req.params.name;
+  foundItem.price = req.body.price;
+
+  res.json({ item: foundItem });
 });
 
 //DELETING ONE ITEM
