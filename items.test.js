@@ -2,6 +2,7 @@ process.env.NODE_ENV = "test";
 // npm packages
 
 const request = require("supertest");
+const { response } = require("./app");
 // app imports
 
 const app = require("./app");
@@ -40,10 +41,17 @@ describe("POST /items", () => {
 describe("PATCH /items/:name", () => {
   test("Updating the name of a single item", async () => {
     const res = await request(app)
-    
       .patch(`/items/${product.name}`)
       .send({ name: "watermelon" });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ items: { name: "watermelon" } });
+    expect(res.body.item).toEqual({ name: "watermelon" });
+  });
+});
+
+describe("DELETE /items/:name", () => {
+  test("Deleting one item by name", async () => {
+    const res = await request(app).delete(`/items/${product.name}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ message: "Deleted" });
   });
 });
